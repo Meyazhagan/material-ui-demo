@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  IconButton,
   List,
   ListItem,
   ListItemAvatar,
@@ -56,12 +55,6 @@ function InfoPost(props) {
     []
   );
 
-  useEffect(
-    () => initialize(),
-    // eslint-disable-next-line
-    [id]
-  );
-
   const handleComments = (e) => {
     e.preventDefault();
     addComments(newComment, id);
@@ -70,7 +63,7 @@ function InfoPost(props) {
   };
 
   console.log(renderAddress(user.address));
-  const { username, phone, address, website, name, email } = user;
+  const { username, phone, website, name, email } = user;
   return (
     <Box display="flex" flexDirection="column" ml={4}>
       <Box mb={3}>
