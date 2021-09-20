@@ -4,9 +4,10 @@ import {
   // IconButton,
   LinearProgress,
   makeStyles,
+  Slide,
   Snackbar,
 } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Alert, AlertTitle } from "@material-ui/lab";
 // import { useEffect, useState } from "react";
 // import CloseIcon from "@material-ui/icons/Close";
 // import CheckIcon from "@material-ui/icons/Check";
@@ -24,7 +25,7 @@ const useStyle = makeStyles((theme) => {
       backgroundColor: "transparent",
     },
     meyazhagan: {
-      background: "#f1f1f1",
+      background: "#ffffff",
       borderRadius: 5,
       width: "fit-content",
       overflow: "hidden",
@@ -44,6 +45,7 @@ function AlertSnack({ message, handleUndo, open, onClose }) {
         open={open}
         autoHideDuration={5000}
         onClose={onClose}
+        TransitionComponent={Transition}
       >
         <Box
           display="flex"
@@ -66,7 +68,8 @@ function AlertSnack({ message, handleUndo, open, onClose }) {
               </Button>
             }
           >
-            {message}
+            <AlertTitle>{message.title}</AlertTitle>
+            Details : {message.desc}
           </Alert>
           <LinearProgress
             color="secondary"
@@ -78,6 +81,10 @@ function AlertSnack({ message, handleUndo, open, onClose }) {
       <div></div>
     </>
   );
+}
+
+function Transition(props) {
+  return <Slide {...props} direction="up" />;
 }
 
 export default AlertSnack;

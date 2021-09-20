@@ -1,31 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router";
 import { fetchPost, fetchUsers } from "../../Helper";
-import {
-  Button,
-  makeStyles,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@material-ui/core";
-import { Formik } from "formik";
+import { Form } from "../../Component";
 
-const useStyle = makeStyles({
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    width: "50vw",
-    "&> *": {
-      marginBottom: "2rem",
-    },
-    select: {
-      width: "10rem",
-    },
-  },
-});
 function EditPost({ editPost }) {
-  const classes = useStyle();
   const { id } = useParams();
   const [post, setPost] = useState({});
   const [users, setUsers] = useState([]);
@@ -35,11 +13,18 @@ function EditPost({ editPost }) {
     setPost(data);
     setUsers(userData);
   };
+  console.log(id);
   const history = useHistory();
   useEffect(
     () => initialize(),
     // eslint-disable-next-line
     [editPost]
+  );
+
+  useEffect(
+    () => initialize(),
+    // eslint-disable-next-line
+    []
   );
 
   // const handleChange = ({ target }) => {
@@ -51,70 +36,27 @@ function EditPost({ editPost }) {
   //   history.push("/post");
   // };
 
-  window.onloadeddata = () => {
-    console.log("loaded");
-  };
   return (
     <>
-      <Formik
-        enableReinitialize={true}
+      {/* <Slide direction="left" in={true} mountOnEnter unmountOnExit> */}
+      <Form
         initialValues={{
-          id: post.id || "",
-          userId: post.userId || "",
-          title: post.title || "",
-          body: post.body || "",
+          id: (post && post.id) || 1,
+          userId: (post && post.userId) || "",
+          title: (post && post.title) || "",
+          body: (post && post.body) || "",
         }}
-        onSubmit={(values) => {
+        atSubmit={(values) => {
           console.log(values);
           editPost(values);
           history.push("/post");
         }}
-      >
-        {(props) => (
-          <form onSubmit={props.handleSubmit} className={classes.form}>
-            <Typography variant="h4" align="center">
-              Edit Post
-            </Typography>
-            <TextField
-              id="id"
-              label="id"
-              onChange={props.handleChange}
-              value={props.values.id}
-            />
-            <TextField
-              id="userId"
-              name="userId"
-              label="User ID"
-              select
-              onChange={props.handleChange}
-              value={props.values.userId}
-            >
-              {users.map((user, index) => {
-                return (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.id} .{user.name}
-                  </MenuItem>
-                );
-              })}
-            </TextField>
-            <TextField
-              id="title"
-              label="Title"
-              onChange={props.handleChange}
-              value={props.values.title}
-            />
-            <TextField
-              multiline
-              minRows={4}
-              id="body"
-              label="Content"
-              onChange={props.handleChange}
-              value={props.values.body}
-            />
-            <Button type="submit">Submit</Button>
-          </form>
-        )}
-      </Formik>
+        heading={"Edit Post"}
+        users={users}
+        // validate={{}}
+        disableId={true}
+      />
+      {/* </Slide> */}
     </>
   );
 }

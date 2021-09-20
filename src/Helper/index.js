@@ -8,9 +8,9 @@ let baseUrl = "https://jsonplaceholder.typicode.com";
 // setBaseUrl();
 const fetchUsers = async () => {
   try {
-    // if (localStorage.getItem("users")) {
-    //   return await JSON.parse(localStorage.getItem("users"));
-    // }
+    if (localStorage.getItem("users")) {
+      return await JSON.parse(localStorage.getItem("users"));
+    }
     const { data } = await axios.get(`${baseUrl}/users`);
     localStorage.setItem("users", JSON.stringify(data));
     return data;
@@ -21,9 +21,9 @@ const fetchUsers = async () => {
 
 const fetchUser = async (id) => {
   try {
-    // if (localStorage.getItem("users")) {
-    //   return await JSON.parse(localStorage.getItem("users"))[id];
-    // }
+    if (localStorage.getItem("users")) {
+      return await JSON.parse(localStorage.getItem("users"))[id - 1];
+    }
     const res = await axios.get(`${baseUrl}/users/${id}`);
     return res.data;
   } catch (err) {
@@ -33,9 +33,9 @@ const fetchUser = async (id) => {
 
 const fetchPosts = async () => {
   try {
-    // if (localStorage.getItem("posts")) {
-    //   return JSON.parse(localStorage.getItem("posts"));
-    // }
+    if (localStorage.getItem("posts")) {
+      return JSON.parse(localStorage.getItem("posts"));
+    }
     const { data } = await axios.get(`${baseUrl}/posts`);
 
     localStorage.setItem("posts", JSON.stringify(data));
@@ -48,9 +48,12 @@ const fetchPosts = async () => {
 
 const fetchPost = async (id) => {
   try {
-    // if (localStorage.getItem("posts")) {
-    //   return JSON.parse(localStorage.getItem("posts"))[id - 1];
-    // }
+    if (localStorage.getItem("posts")) {
+      // JSON.parse();
+      const posts = JSON.parse(localStorage.getItem("posts"));
+      const index = posts.findIndex((post) => post.id === +id);
+      return posts[index];
+    }
     const url = `${baseUrl}/posts/${id}`;
     const { data } = await axios.get(url);
     return data;
@@ -63,9 +66,9 @@ const fetchPost = async (id) => {
 const fetchCommands = async (id) => {
   try {
     const key = `comments-${id}`;
-    // if (localStorage.getItem(key)) {
-    //   return JSON.parse(localStorage.getItem(key));
-    // }
+    if (localStorage.getItem(key)) {
+      return JSON.parse(localStorage.getItem(key));
+    }
     const { data } = await axios.get(`${baseUrl}/posts/${id}/comments`);
 
     localStorage.setItem(key, JSON.stringify(data));
@@ -102,6 +105,22 @@ const deletePost = async (post) => {
   return data;
 };
 
+const addComments = async (commentBody, id) => {
+  const key = `comments-${id}`;
+  console.log(commentBody, id);
+  const comments = JSON.parse(localStorage.getItem(key), null) || [];
+  const comment = {
+    body: commentBody,
+    email: "anonymous user",
+    id: comments ? comments.length + 1 : 1,
+    name: "New Comments",
+    postId: id,
+  };
+
+  const newComments = [comment, ...comments];
+  localStorage.setItem(key, JSON.stringify(newComments));
+};
+
 // const fetchFrom = (url, action) => {};
 export {
   fetchUser,
@@ -112,4 +131,5 @@ export {
   addPost,
   editPost,
   deletePost,
+  addComments,
 };

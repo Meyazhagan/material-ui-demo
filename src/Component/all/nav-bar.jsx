@@ -8,7 +8,7 @@ import {
 import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
 import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 
 const usestyle = makeStyles((theme) => {
@@ -30,13 +30,14 @@ const usestyle = makeStyles((theme) => {
   };
 });
 function NavBar() {
+  const location = useLocation();
   const history = useHistory();
   const [display, setDisplay] = useState(true);
   const classes = usestyle(display);
   const [active, setActive] = useState("home");
   useEffect(
     () => {
-      history.push(`/${active === "home" ? "" : active}`);
+      setActive(location.pathname.split("/")[1].toLowerCase());
       setTimeout(() => setDisplay(false), 2000);
     },
     //eslint-disable-next-line

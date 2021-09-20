@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom";
 import { Route, Switch } from "react-router";
-import { Box, Breadcrumbs } from "@material-ui/core";
+import { Box, Breadcrumbs, Button, Grid } from "@material-ui/core";
 import { AllPost, InfoPost, CreatePost, EditPost } from "../../Pages";
 import { capitalize } from "@material-ui/core";
 import { useEffect, useState } from "react";
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import {
   fetchPosts,
   addPost as addPostToServer,
-  editPost as editPostToServer,
+  fetchUsers,
 } from "../../Helper";
 import { AlertSnack } from "../../Component";
 
@@ -15,17 +15,26 @@ function PostPage(props) {
   const [posts, setPosts] = useState([]);
   const [prevPost, setPrevPosts] = useState([]);
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({});
+  const [users, setUsers] = useState([]);
 
   const initialize = async () => {
     const data = await fetchPosts();
+    const userData = await fetchUsers();
     setPosts(data);
+    setUsers(userData);
   };
   useEffect(() => {
     initialize();
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("posts", JSON.stringify([...posts]));
+    console.log("called");
+  }, [posts]);
+
   const {
+    history,
     match: { url },
     location: { pathname },
   } = props;
@@ -34,7 +43,7 @@ function PostPage(props) {
 
   const addPost = async (post) => {
     setOpen(true);
-    setMessage("Adding the Post");
+    setMessage({ title: "Adding the Post", desc: post.title });
     setPrevPosts([...posts]);
     const resData = await addPostToServer(post);
     setPosts([resData, ...posts]);
@@ -43,9 +52,9 @@ function PostPage(props) {
   const editPost = (post) => {
     // setPosts([ ...posts]);
     setOpen(true);
-    setMessage("Editing the Post");
+    setMessage({ title: "Editing the Post", desc: post.title });
     setPrevPosts([...posts]);
-    editPostToServer(post);
+    // editPostToServer(post);
     const index = posts.findIndex((pos) => pos.id === post.id);
     if (index === -1) return;
     posts[index] = post;
@@ -55,7 +64,7 @@ function PostPage(props) {
   const deletePost = (post) => {
     // setPosts([ ...posts]);
     setOpen(true);
-    setMessage("Deleting the Post");
+    setMessage({ title: "Deleting the Post", desc: post.title });
     setPrevPosts([...posts]);
     const index = posts.findIndex((pos) => pos.id === post.id);
     if (index === -1) return;
@@ -68,26 +77,62 @@ function PostPage(props) {
     setOpen(false);
   };
   return (
-    <Box m={3}>
-      <Breadcrumbs>
-        <Link to={url}>Post</Link>
-        <Link to={pathname}>{curr ? capitalize(curr) : ""}</Link>
-      </Breadcrumbs>
-      <Box display="flex">
-        <AllPost posts={posts} deletePost={deletePost} />
-        <Switch>
-          <Route
-            path={`${url}/create`}
-            render={() => <CreatePost addPost={addPost} />}
-          />
-          <Route
-            path={`${url}/edit/:id`}
-            render={() => <EditPost editPost={editPost} />}
-          />
-          <Route path={`${url}/:id`} exact component={InfoPost} />
-          <Route path={"*"} render={() => <></>} />
-        </Switch>
+    <Box m={4}>
+      <Box mb={2}>
+        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
+          <Button size="small" onClick={() => history.push(url)}>
+            Post
+          </Button>
+          {curr ? (
+            <Button size="small" onClick={() => history.push(pathname)}>
+              {capitalize(curr)}
+            </Button>
+          ) : (
+            ""
+          )}
+        </Breadcrumbs>
       </Box>
+
+      <Grid
+        container
+        direction="row-reverse"
+        justifyContent="center"
+        alignItems="flex-start"
+      >
+        <Grid container item xs={12} md={6}>
+          <Switch>
+            <Route
+              path={`${url}/edit/:id`}
+              render={() => <EditPost editPost={editPost} />}
+            />
+
+            <Route
+              path={`${url}/create`}
+              render={() => <CreatePost addPost={addPost} />}
+            />
+            <Route
+              path={`${url}/:id`}
+              exact
+              render={() => <InfoPost posts={posts} users={users} />}
+            />
+          </Switch>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Route
+            path={`${url}`}
+            render={() => (
+              <AllPost
+                posts={posts}
+                deletePost={deletePost}
+                editPost={editPost}
+                users={users}
+                curr={typeof curr === "number" ? curr : -1}
+              />
+            )}
+          />
+        </Grid>
+      </Grid>
+
       <AlertSnack
         open={open}
         onClose={(event, res) => {
