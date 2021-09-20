@@ -1,13 +1,16 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
+import { Route } from "react-router";
+import { AboutPage, HomePage, PostPage } from "./Pages";
+
+import { NavBar } from "./Component";
 
 function App() {
   return (
-    <div>
-      <Button variant="contained" color="primary">
-        Primary
-      </Button>
-    </div>
+    <>
+      <NavBar />
+      <Route path="/" exact component={HomePage}></Route>
+      <Route path="/about" component={AboutPage}></Route>
+      <Route path="/post" component={PostPage}></Route>
+    </>
   );
 }
 
