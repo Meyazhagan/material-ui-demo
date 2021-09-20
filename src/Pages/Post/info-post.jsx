@@ -55,6 +55,12 @@ function InfoPost(props) {
     []
   );
 
+  useEffect(
+    () => initialize(),
+    // eslint-disable-next-line
+    [id]
+  );
+
   const handleComments = (e) => {
     e.preventDefault();
     addComments(newComment, id);
@@ -62,7 +68,7 @@ function InfoPost(props) {
     initialize();
   };
 
-  console.log(renderAddress(user.address));
+  
   const { username, phone, website, name, email } = user;
   return (
     <Box display="flex" flexDirection="column" ml={4}>
@@ -132,22 +138,5 @@ function InfoPost(props) {
   );
 }
 
-{
-  /* {(
-        <Typography component="span" variant="body2" color="textSecondary">
-          {"No Comments"}
-        </Typography>
-      )} */
-}
-{
-  /* </Grid> */
-}
 
-const renderAddress = (address) => {
-  const arrObj = [];
-  for (let detail in address) {
-    detail !== "geo" && arrObj.push(`${detail} ${address[detail]}`);
-  }
-  return arrObj;
-};
 export default InfoPost;
