@@ -1,13 +1,10 @@
 import {
-  BottomNavigation,
-  BottomNavigationAction,
+  Box,
+  Button,
   LinearProgress,
   makeStyles,
   Paper,
 } from "@material-ui/core";
-import HomeRoundedIcon from "@material-ui/icons/HomeRounded";
-import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
-import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import { useHistory, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 
@@ -37,7 +34,7 @@ function NavBar() {
   const [active, setActive] = useState("home");
   useEffect(
     () => {
-      setActive(location.pathname.split("/")[1].toLowerCase());
+      setActive(location.pathname.split("/")[1].toLowerCase() || "home");
       setTimeout(() => setDisplay(false), 2000);
     },
     //eslint-disable-next-line
@@ -47,6 +44,17 @@ function NavBar() {
     setDisplay(true);
     setTimeout(() => setDisplay(false), 2000);
   }, [active]);
+
+  const handleClick = (action) => {
+    setActive(action);
+    history.push(`/${action === "home" ? "" : action}`);
+  };
+  const handleActive = (action) => {
+    if (active === action) {
+      return "secondary";
+    }
+    return "primary";
+  };
   return (
     <>
       {display ? (
@@ -58,8 +66,31 @@ function NavBar() {
       ) : (
         <></>
       )}
-      <Paper className={classes.nav}>
-        <BottomNavigation
+      <Paper className={classes.nav} elevation={0}>
+        <Box display="flex" justifyContent="flex-start" mt={2} ml={5}>
+          <Button
+            onClick={() => handleClick("home")}
+            color={handleActive("home")}
+            // startIcon={<HomeRoundedIcon fontSize="small" />}
+          >
+            Home
+          </Button>
+          <Button
+            onClick={() => handleClick("post")}
+            color={handleActive("post")}
+            // startIcon={<LibraryBooksIcon fontSize="small" />}
+          >
+            Post
+          </Button>
+          <Button
+            onClick={() => handleClick("about")}
+            color={handleActive("about")}
+            // startIcon={<InfoRoundedIcon fontSize="large" />}
+          >
+            About
+          </Button>
+        </Box>
+        {/* <BottomNavigation
           className={classes.bottom}
           value={active}
           onChange={(e, value) => {
@@ -82,7 +113,7 @@ function NavBar() {
             value="about"
             label="About"
           />
-        </BottomNavigation>
+        </BottomNavigation> */}
       </Paper>
     </>
   );

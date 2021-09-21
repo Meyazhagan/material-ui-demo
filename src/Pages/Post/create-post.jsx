@@ -30,7 +30,6 @@ function CreatePost({ addPost }) {
           body: "",
         }}
         atSubmit={(values) => {
-          console.log(values);
           addPost(values);
           history.replace("/post");
         }}

@@ -13,7 +13,6 @@ function EditPost({ editPost }) {
     setPost(data);
     setUsers(userData);
   };
-  console.log(id);
   const history = useHistory();
   useEffect(
     () => initialize(),
@@ -47,13 +46,11 @@ function EditPost({ editPost }) {
           body: (post && post.body) || "",
         }}
         atSubmit={(values) => {
-          console.log(values);
           editPost(values);
           history.push("/post");
         }}
         heading={"Edit Post"}
         users={users}
-        // validate={{}}
         disableId={true}
       />
       {/* </Slide> */}

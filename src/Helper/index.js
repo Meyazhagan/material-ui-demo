@@ -33,7 +33,10 @@ const fetchUser = async (id) => {
 
 const fetchPosts = async () => {
   try {
-    if (localStorage.getItem("posts") && JSON.parse(localStorage.getItem("posts")).length !== 0) {
+    if (
+      localStorage.getItem("posts") &&
+      JSON.parse(localStorage.getItem("posts")).length !== 0
+    ) {
       return JSON.parse(localStorage.getItem("posts"));
     }
     const { data } = await axios.get(`${baseUrl}/posts`);
@@ -107,7 +110,6 @@ const deletePost = async (post) => {
 
 const addComments = async (commentBody, id) => {
   const key = `comments-${id}`;
-  console.log(commentBody, id);
   const comments = JSON.parse(localStorage.getItem(key), null) || [];
   const comment = {
     body: commentBody,

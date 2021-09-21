@@ -36,12 +36,28 @@ const useStyle = makeStyles((theme) => {
 function Form({ initialValues, atSubmit, users, heading, disableId }) {
   const history = useHistory();
   const classes = useStyle();
+  const validate = (value) => {
+    const errors = {};
+    if (!value.userId) {
+      errors.userId = "please select one";
+    } else if (!value.title) {
+      errors.title = "requried";
+    } else if (value.title.length < 10) {
+      errors.title = "title should be atleast 10 characters";
+    } else if (!value.body) {
+      errors.body = "requried";
+    } else if (value.body.length < 20) {
+      errors.body = "content should be atleast 20 characters";
+    }
+
+    return errors;
+  };
   return (
     <Formik
       enableReinitialize={true}
       initialValues={initialValues}
+      validate={validate}
       onSubmit={(values) => {
-        console.log(values);
         atSubmit(values);
         history.push("/post");
       }}
@@ -68,8 +84,10 @@ function Form({ initialValues, atSubmit, users, heading, disableId }) {
             select
             onChange={props.handleChange}
             value={props.values.userId}
+            error={props.errors.userId}
+            helperText={props.errors.userId}
           >
-            {users.map((user, index) => {
+            {users.map((user) => {
               return (
                 <MenuItem key={user.id} value={user.id}>
                   {user.name}
@@ -83,6 +101,8 @@ function Form({ initialValues, atSubmit, users, heading, disableId }) {
               label="Title"
               onChange={props.handleChange}
               value={props.values.title}
+              error={props.errors.title}
+              helperText={props.errors.title}
             />
           </FormControl>
 
@@ -94,6 +114,8 @@ function Form({ initialValues, atSubmit, users, heading, disableId }) {
             label="Content"
             onChange={props.handleChange}
             value={props.values.body}
+            error={props.errors.body}
+            helperText={props.errors.body}
           />
           <Box display="flex" justifyContent="flex-end">
             <Button

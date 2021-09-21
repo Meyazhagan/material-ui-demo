@@ -10,6 +10,7 @@ import {
   fetchUsers,
 } from "../../Helper";
 import { AlertSnack } from "../../Component";
+import { ReactComponent as Meditate } from "../../Assets/Undraw/post.svg";
 
 function PostPage(props) {
   const [posts, setPosts] = useState([]);
@@ -30,7 +31,6 @@ function PostPage(props) {
 
   useEffect(() => {
     localStorage.setItem("posts", JSON.stringify([...posts]));
-    console.log("called");
   }, [posts]);
 
   const {
@@ -114,6 +114,13 @@ function PostPage(props) {
               path={`${url}/:id`}
               exact
               render={() => <InfoPost posts={posts} users={users} />}
+            />
+            <Route
+              path={`${url}/`}
+              exact
+              render={() => (
+                <Meditate style={{ width: "80%", margin: "0 auto" }} />
+              )}
             />
           </Switch>
         </Grid>
